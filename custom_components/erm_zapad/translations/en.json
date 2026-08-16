@@ -1,0 +1,37 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ERM Запад (ЧЕЗ) — measurement point",
+        "description": "Enter the measurement point number (ITN) from your electricity bill. The integration polls info.ermzapad.bg for planned (next 48 hours) and currently registered outages.",
+        "data": {
+          "itn": "Measurement point (ITN)",
+          "planned_scan_minutes": "Planned check interval (minutes)",
+          "current_scan_minutes": "Current check interval (minutes)"
+        }
+      }
+    },
+    "error": {
+      "required": "Please enter a measurement point number.",
+      "invalid_itn": "Invalid number — it must be 12 or 16 characters (as printed on the bill)."
+    },
+    "abort": {
+      "already_configured": "This measurement point is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ERM Запад (ЧЕЗ) — settings",
+        "data": {
+          "itn": "Measurement point (ITN)",
+          "planned_scan_minutes": "Planned check interval (minutes)",
+          "current_scan_minutes": "Current check interval (minutes)"
+        }
+      }
+    },
+    "error": {
+      "invalid_itn": "Invalid number — it must be 12 or 16 characters."
+    }
+  }
+}

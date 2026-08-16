@@ -1,0 +1,98 @@
+blueprint:
+  name: ERM Запад — уведомление при прекъсване на тока
+  description: >-
+    Изпраща известия, когато ЕРМ Запад (ЧЕЗ) обяви планирано или текущо
+    прекъсване на електрозахранването за вашата точка на измерване, както и
+    когато то отпадне. Създайте я след като добавите интеграцията
+    "ERM Запад (ЧЕЗ) Прекъсвания".
+  domain: automation
+  source_url: https://github.com/bsmiho/ha-ermzapad-outages
+  input:
+    planned_sensor:
+      name: Планирано прекъсване (binary_sensor)
+      description: binary_sensor.erm_zapad_planned_outage_flag
+      selector:
+        entity:
+          domain: binary_sensor
+    current_sensor:
+      name: Текущо прекъсване (binary_sensor)
+      description: binary_sensor.erm_zapad_current_outage_flag
+      selector:
+        entity:
+          domain: binary_sensor
+    notify_targets:
+      name: Устройства за известия
+      description: Телефони/устройства, които да получават известията.
+      selector:
+        target:
+          entity:
+            - domain: notify
+
+trigger:
+  - platform: state
+    entity_id: !input planned_sensor
+    to: "on"
+    id: planned_on
+  - platform: state
+    entity_id: !input planned_sensor
+    to: "off"
+    id: planned_off
+  - platform: state
+    entity_id: !input current_sensor
+    to: "on"
+    id: current_on
+  - platform: state
+    entity_id: !input current_sensor
+    to: "off"
+    id: current_off
+
+condition: []
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: planned_on
+        sequence:
+          - service: notify.notify
+            target: !input notify_targets
+            data:
+              title: "⚡ Планирано прекъсване на тока"
+              message: >-
+                ЕРМ Запад обяви планирано прекъсване:
+                {{ state_attr(planned_sensor, 'details') }}
+      - conditions:
+          - condition: trigger
+            id: current_on
+        sequence:
+          - service: notify.notify
+            target: !input notify_targets
+            data:
+              title: "⚠️ Прекъсване на тока в момента"
+              message: >-
+                ЕРМ Запад отчита прекъсване:
+                {{ state_attr(current_sensor, 'details') }}
+      - conditions:
+          - condition: trigger
+            id: planned_off
+        sequence:
+          - service: notify.notify
+            target: !input notify_targets
+            data:
+              title: "✅ Планираното прекъсване отпадна"
+              message: >-
+                Планираното прекъсване за вашата точка на измерване е
+                преминало или е отменено.
+      - conditions:
+          - condition: trigger
+            id: current_off
+        sequence:
+          - service: notify.notify
+            target: !input notify_targets
+            data:
+              title: "✅ Токът е възстановен"
+              message: >-
+                ЕРМ Запад вече не отчита прекъсване за вашата точка на
+                измерване.
+
+mode: single

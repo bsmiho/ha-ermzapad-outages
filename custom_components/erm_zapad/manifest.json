@@ -1,0 +1,12 @@
+{
+  "domain": "erm_zapad",
+  "name": "ERM Запад (ЧЕЗ) Прекъсвания",
+  "codeowners": ["@bsmiho"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/bsmiho/ha-ermzapad-outages",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/bsmiho/ha-ermzapad-outages/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}
