@@ -54,7 +54,7 @@ action:
           - condition: trigger
             id: planned_on
         sequence:
-          - service: notify.notify
+          - action: notify.notify
             target: !input notify_targets
             data:
               title: "⚡ Планирано прекъсване на тока"
@@ -65,7 +65,7 @@ action:
           - condition: trigger
             id: current_on
         sequence:
-          - service: notify.notify
+          - action: notify.notify
             target: !input notify_targets
             data:
               title: "⚠️ Прекъсване на тока в момента"
@@ -76,7 +76,7 @@ action:
           - condition: trigger
             id: planned_off
         sequence:
-          - service: notify.notify
+          - action: notify.notify
             target: !input notify_targets
             data:
               title: "✅ Планираното прекъсване отпадна"
@@ -87,7 +87,7 @@ action:
           - condition: trigger
             id: current_off
         sequence:
-          - service: notify.notify
+          - action: notify.notify
             target: !input notify_targets
             data:
               title: "✅ Токът е възстановен"

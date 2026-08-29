@@ -70,6 +70,19 @@ def _parse(raw: str) -> OutageInfo:
     return info
 
 
+def _friendly_error(exc: Exception) -> str:
+    """Return a short, human-friendly error string for the sensor state.
+
+    Avoids leaking raw exception/URL noise into the HA UI.
+    """
+    msg = str(exc).strip()
+    if not msg:
+        msg = type(exc).__name__
+    msg = re.sub(r"https?://\S+", "<URL>", msg)
+    msg = re.sub(r"\s+", " ", msg)
+    return msg[:120]
+
+
 class ErmZapadClient:
     """Minimal urllib-based client for the avplan.php service (no external deps)."""
 
@@ -108,14 +121,14 @@ class ErmZapadClient:
         try:
             return _parse(self._post("viewitn_plan", ""))
         except Exception as exc:  # noqa: BLE001 - surface any failure to HA
-            return OutageInfo(state=f"{ERROR_PREFIX}: {exc}")
+            return OutageInfo(state=f"{ERROR_PREFIX}: {_friendly_error(exc)}")
 
     def current(self) -> OutageInfo:
         """Currently registered outage (planned or unplanned)."""
         try:
             return _parse(self._post("viewitn", CURRENT_USER))
         except Exception as exc:  # noqa: BLE001
-            return OutageInfo(state=f"{ERROR_PREFIX}: {exc}")
+            return OutageInfo(state=f"{ERROR_PREFIX}: {_friendly_error(exc)}")
 
 
 def now_str() -> str:
